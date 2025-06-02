@@ -11,7 +11,7 @@
   </style>
 </head>
 <body>
-  <h1>座位查詢系統</h1>
+  <h1>座位查詢系統01</h1>
   <input type="text" id="nameInput" placeholder="請輸入姓名">
   <button onclick="search()">查詢</button>
   <div id="result"></div>
@@ -24,22 +24,27 @@
         return;
       }
 
-      const sheetID = "1gFIMfxYjp5biWasuretw-HKtNotO7NIj66y0boSWom8"; // ← 換成你的 Google Sheet ID
-      const query = `select A, B where A = '${name}'`;
-      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tq=${encodeURIComponent(query)}`;
+      const csvUrl = "https://你的github.io/資料夾/座位表.csv"; // ← 換成你的路徑
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(csvUrl);
         const text = await response.text();
 
-        // 解析回傳格式（Google Visualization API 是 JSONP 格式）
-        const json = JSON.parse(text.substring(47, text.length - 2));
-        const rows = json.table.rows;
+        // 解析 CSV
+        const lines = text.split('\n').map(line => line.trim());
+        const headers = lines[0].split(',');
 
-        if (rows.length > 0) {
-          const seat = rows[0].c[1].v;
-          document.getElementById("result").innerText = `座位：${seat}`;
-        } else {
+        let found = false;
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(',');
+          if (cols[0].trim() === name) {
+            document.getElementById("result").innerText = `座位：${cols[1].trim()}`;
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
           document.getElementById("result").innerText = "查無資料";
         }
       } catch (err) {
