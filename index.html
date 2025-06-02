@@ -1,5 +1,38 @@
-<html>
-  <body>
-    <h1>mdhad1111111111sxdasdfasfasdfasddd</h1>
-  </body>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>座位查詢系統</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
+    input, button { font-size: 1.2em; padding: 10px; }
+    #result { margin-top: 20px; font-size: 1.5em; color: green; }
+  </style>
+</head>
+<body>
+  <h1>座位查詢系統</h1>
+  <input type="text" id="nameInput" placeholder="請輸入姓名">
+  <button onclick="search()">查詢</button>
+  <div id="result"></div>
+
+  <script>
+    async function search() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (!name) {
+        alert("請輸入姓名！");
+        return;
+      }
+
+      const apiUrl = "https://script.google.com/macros/s/AKfycbxMIZS_NAgbPxKqCCNF8a2TgGCXQgVFZsEfJyARYpgPLJ6yaBVPANvn0KBSn9VzZ8j1yw/exec?name=" + encodeURIComponent(name);
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        document.getElementById("result").innerText = `座位：${data.seat}`;
+      } catch (err) {
+        document.getElementById("result").innerText = "查詢失敗，請稍後再試。";
+      }
+    }
+  </script>
+</body>
 </html>
