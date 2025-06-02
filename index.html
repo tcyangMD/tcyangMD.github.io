@@ -24,11 +24,24 @@
         return;
       }
 
-      const apiUrl = "https://script.google.com/macros/s/AKfycby3V20QlHZenR6LveQsDLVVbkyc6vIWOAOhoW_C0Ok5YZRWuuKpZo6ZbZzNQjj90pw/exec?name=" + encodeURIComponent(name);
+      const sheetID = "1gFIMfxYjp5biWasuretw-HKtNotO7NIj66y0boSWom8"; // ← 換成你的 Google Sheet ID
+      const query = `select A, B where A = '${name}'`;
+      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tq=${encodeURIComponent(query)}`;
+
       try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        document.getElementById("result").innerText = `座位：${data.seat}`;
+        const response = await fetch(url);
+        const text = await response.text();
+
+        // 解析回傳格式（Google Visualization API 是 JSONP 格式）
+        const json = JSON.parse(text.substring(47, text.length - 2));
+        const rows = json.table.rows;
+
+        if (rows.length > 0) {
+          const seat = rows[0].c[1].v;
+          document.getElementById("result").innerText = `座位：${seat}`;
+        } else {
+          document.getElementById("result").innerText = "查無資料";
+        }
       } catch (err) {
         document.getElementById("result").innerText = "查詢失敗，請稍後再試。";
       }
