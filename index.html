@@ -3,18 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>座位查詢系統</title>
+  <title>楊籃府 6/7婚宴賓客座位查詢</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
-    input, button { font-size: 1.2em; padding: 10px; }
-    #result { margin-top: 20px; font-size: 1.5em; color: green; }
+    body {
+      font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+      background: #fff6f6;
+      color: #5a3e36;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-size: 2em;
+      color: #d45a49;
+    }
+    input {
+      padding: 15px;
+      font-size: 1.1em;
+      width: 80%;
+      border: 2px solid #f5cccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.1em;
+      background-color: #d45a49;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #b04339;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 1.5em;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <h1>座位查詢系統01</h1>
-  <input type="text" id="nameInput" placeholder="請輸入姓名">
-  <button onclick="search()">查詢</button>
-  <div id="result"></div>
+  <div class="container">
+    <h1>楊籃府 6/7 婚宴座位查詢</h1>
+    <input type="text" id="nameInput" placeholder="請輸入您的姓名">
+    <br>
+    <button onclick="search()">查詢</button>
+    <div id="result"></div>
+  </div>
 
   <script>
     async function search() {
@@ -30,7 +82,6 @@
         const response = await fetch(csvUrl);
         const text = await response.text();
 
-        // 解析 CSV
         const lines = text.split('\n').map(line => line.trim());
         const headers = lines[0].split(',');
 
@@ -38,17 +89,17 @@
         for (let i = 1; i < lines.length; i++) {
           const cols = lines[i].split(',');
           if (cols[0].trim() === name) {
-            document.getElementById("result").innerText = `座位：${cols[1].trim()}`;
+            document.getElementById("result").innerText = `您的座位：${cols[1].trim()}`;
             found = true;
             break;
           }
         }
 
         if (!found) {
-          document.getElementById("result").innerText = "查無資料";
+          document.getElementById("result").innerText = "安排中，當日由招待人員為您服務。";
         }
       } catch (err) {
-        document.getElementById("result").innerText = "查詢失敗，請稍後再試。";
+        document.getElementById("result").innerText = "系統暫時忙碌，請稍後再試。";
       }
     }
   </script>
